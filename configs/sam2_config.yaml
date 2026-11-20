@@ -1,0 +1,44 @@
+seed: 42
+parameter_source: server-verified SAM2.1 configuration
+release: SAM 2.1
+model: Hiera-L
+model_config: configs/sam2.1/sam2.1_hiera_l.yaml
+checkpoint: models/sam2.1_hiera_large.pt
+checkpoint_sha256: 2647878D5DFA5098F2F8649825738A9345572BAE2D4350A2468587ECE47DD318
+
+raster:
+  target_resolution_m: 0.20
+  resampling: bilinear
+  value_min: 0.0
+  value_max: 255.0
+
+tiling:
+  # The retained server script is 512 px. The audited reproduction runner also
+  # supports the four manuscript context scales listed below.
+  server_tile_size_px: 512
+  manuscript_tile_sizes_px: [512, 1024, 2048, 4096]
+  overlap_fraction: 0.50
+
+automatic_mask_generator:
+  points_per_side: 32
+  points_per_batch: 64
+  pred_iou_thresh: 0.86
+  stability_score_thresh: 0.92
+  stability_score_offset: 1.0
+  mask_threshold: 0.0
+  box_nms_thresh: 0.7
+  crop_n_layers: 1
+  crop_nms_thresh: 0.7
+  crop_overlap_ratio: 0.3413333333333333
+  crop_n_points_downscale_factor: 2
+  min_mask_region_area_px: 100
+  output_mode: binary_mask
+
+vectorization:
+  minimum_polygon_area_m2: 0.5
+
+runtime:
+  fp16: true
+  torch_compile: false
+  prefetch_tiles: 2
+  shapefile_write_workers: 2

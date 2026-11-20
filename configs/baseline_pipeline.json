@@ -1,0 +1,206 @@
+{
+  "seed": 42,
+  "device": "cuda",
+  "output_dir": "results/segmentation_metrics/comparison_runtime",
+  "encoder_by_model": {
+    "unetpp": "resnet34",
+    "deeplabv3plus": "resnet101"
+  },
+  "initialization_policy": "official_pretrained",
+  "deeplabv3plus": {
+    "output_stride": 16,
+    "atrous_rates": [
+      6,
+      12,
+      18
+    ]
+  },
+  "runtime": {
+    "precision": "bf16",
+    "channels_last": true,
+    "allow_tf32": true,
+    "deterministic": true,
+    "cudnn_benchmark": false,
+    "empty_cache_between_runs": true
+  },
+  "models": [
+    "unetpp",
+    "deeplabv3plus",
+    "seanet"
+  ],
+  "experiment_features": [
+    "rgb"
+  ],
+  "scales": [
+    4096,
+    2048,
+    1024,
+    512
+  ],
+  "classes": [
+    {
+      "id": 1,
+      "name": "field_including_greenhouse"
+    },
+    {
+      "id": 2,
+      "name": "water"
+    }
+  ],
+  "features": {
+    "rgb": {
+      "bands": [
+        1,
+        2,
+        3
+      ],
+      "value_min": 0.0,
+      "value_max": 255.0,
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ]
+    },
+    "slope": {
+      "bands": [
+        1,
+        2,
+        3
+      ],
+      "value_min": 0.0,
+      "value_max": 255.0,
+      "mean": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "std": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    }
+  },
+  "splits": {
+    "train": {
+      "features": {
+        "rgb": "data/external/rgb_20cm.tif",
+        "slope": "data/external/slope_20cm.tif"
+      },
+      "labels": "data/annotations/training_objects_no_test_overlap_488.gpkg",
+      "class_field": "class_en",
+      "class_value_map": {
+        "Building": 0,
+        "Forest": 0,
+        "Field": 1,
+        "Greenhouse": 1,
+        "Water": 2
+      },
+      "labels_are_exhaustive": false,
+      "all_touched": true
+    },
+    "validation": {
+      "features": {
+        "rgb": "data/external/rgb_20cm.tif",
+        "slope": "data/external/slope_20cm.tif"
+      },
+      "valid_region": "data/evaluation_inputs/regions/validation_region.gpkg",
+      "label_sources": [
+        {
+          "path": "data/annotations/segmentation_truth/field_segmentation_truth.shp",
+          "class_id": 1
+        },
+        {
+          "path": "data/annotations/segmentation_truth/water_segmentation_truth.shp",
+          "class_id": 2
+        }
+      ],
+      "stratify_region": "data/evaluation_inputs/regions/interstrip_region.shp",
+      "labels_are_exhaustive": true,
+      "all_touched": true
+    },
+    "test": {
+      "features": {
+        "rgb": "data/external/rgb_20cm.tif",
+        "slope": "data/external/slope_20cm.tif"
+      },
+      "valid_region": "data/evaluation_inputs/regions/independent_test_region.gpkg",
+      "label_sources": [
+        {
+          "path": "data/annotations/segmentation_truth/field_segmentation_truth.shp",
+          "class_id": 1
+        },
+        {
+          "path": "data/annotations/segmentation_truth/water_segmentation_truth.shp",
+          "class_id": 2
+        }
+      ],
+      "stratify_region": "data/evaluation_inputs/regions/interstrip_region.shp",
+      "labels_are_exhaustive": true,
+      "all_touched": true
+    }
+  },
+  "training": {
+    "patch_size": 512,
+    "epochs": 30,
+    "batch_size": 2,
+    "workers": 4,
+    "persistent_workers": true,
+    "prefetch_factor": 2,
+    "learning_rate": 0.0001,
+    "learning_rate_by_model": {
+      "unetpp": 0.0001,
+      "deeplabv3plus": 0.00005,
+      "seanet": 0.00005
+    },
+    "weight_decay": 0.0001,
+    "freeze_pretrained_encoder_batchnorm": true,
+    "class_weighting": "inverse_frequency",
+    "ce_weight": 1.0,
+    "dice_weight": 1.0,
+    "seanet_edge_weight": 0.4,
+    "seanet_distance_weight": 0.2,
+    "min_valid_fraction": 0.01,
+    "min_foreground_fraction": 0.0,
+    "augmentation": {
+      "horizontal_flip_probability": 0.5,
+      "vertical_flip_probability": 0.5,
+      "rotation_degrees": [
+        0,
+        90,
+        180,
+        270
+      ],
+      "brightness_contrast": true,
+      "brightness_limit": 0.2,
+      "contrast_limit": 0.2
+    }
+  },
+  "inference": {
+    "overlap": 0.5,
+    "network_input_size": 512,
+    "boundary_width_pixels": 3
+  },
+  "selection": {
+    "primary_metric": "mean_iou",
+    "tie_breakers": [
+      "mean_f1",
+      "boundary_iou"
+    ]
+  },
+  "audit": {
+    "enforce": true,
+    "max_label_overlap_area": 0.001
+  },
+  "seanet": {
+    "source_dir": "third_party/SEANet_torch",
+    "pretrained_source": "torchvision_vgg16_imagenet",
+    "vgg16_mat": null
+  }
+}

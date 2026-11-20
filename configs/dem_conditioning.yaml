@@ -1,0 +1,36 @@
+experiment:
+  routing_algorithms: [D8, MFD]
+  flow_accumulation_threshold_cells: 1200
+  main_matching_tolerance_m: 1.0
+  sensitivity_tolerances_m: [0.5, 1.5]
+
+burning_depth_grid:
+  field_ditch_A_m:
+    start: 0.0
+    stop: 2.0
+    step: 0.2
+  channel_B_m:
+    start: 0.0
+    stop: 2.0
+    step: 0.2
+  combinations: 121
+
+recommended_conservative_setting:
+  field_ditch_A_m: 0.8
+  channel_B_m: 1.2
+  flow_accumulation_threshold_cells: 1200
+
+metrics:
+  - recall
+  - precision
+  - f1
+  - buffered_iou
+  - buffered_dice
+  - bidirectional_path_offset_m
+  - internal_gap_continuity_proxy
+
+software:
+  arcgis_pro_required: true
+  arcpy_required: true
+  spatial_analyst_required: true
+

@@ -1,0 +1,15 @@
+{
+  "dataset": "training_objects_no_test_overlap_488.gpkg",
+  "objects": 488,
+  "class_counts": {
+    "Field": 189,
+    "Forest": 135,
+    "Water": 74,
+    "Building": 55,
+    "Greenhouse": 35
+  },
+  "geometry": "Polygon",
+  "crs": "EPSG:32650",
+  "independent_test_overlap": "No positive-area overlap",
+  "shapefile_copy": "training_objects_488_shp/training_objects_488.shp"
+}

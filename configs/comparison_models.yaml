@@ -1,0 +1,36 @@
+seed: 42
+device: cuda
+models: [unetpp, deeplabv3plus, seanet]
+features: [rgb]
+context_scales_px: [4096, 2048, 1024, 512]
+network_input_size_px: 512
+overlap_fraction: 0.5
+
+initialization:
+  policy: official_pretrained
+  unetpp_encoder: resnet34_imagenet
+  deeplabv3plus_encoder: resnet101_imagenet
+  seanet_encoder: torchvision_vgg16_imagenet
+
+training:
+  epochs: 30
+  batch_size: 2
+  optimizer: AdamW
+  learning_rate:
+    unetpp: 0.0001
+    deeplabv3plus: 0.00005
+    seanet: 0.00005
+  weight_decay: 0.0001
+  class_weighting: inverse_frequency
+  cross_entropy_weight: 1.0
+  dice_weight: 1.0
+  seanet_edge_weight: 0.4
+  seanet_distance_weight: 0.2
+  freeze_pretrained_encoder_batchnorm: true
+
+selection:
+  region: validation_only
+  primary_metric: mean_iou
+  tie_breakers: [mean_f1, boundary_iou]
+  independent_test_evaluations: 1
+

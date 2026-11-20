@@ -1,0 +1,12 @@
+rgb_raster: data/external/rgb_20cm.tif
+slope_raster: data/external/slope_20cm.tif
+sam2_repository: third_party/sam2
+sam2_checkpoint: models/sam2.1_hiera_large.pt
+field_truth: data/annotations/segmentation_truth/field_segmentation_truth.shp
+water_truth: data/annotations/segmentation_truth/water_segmentation_truth.shp
+interstrip_region: data/evaluation_inputs/regions/interstrip_region.shp
+raw_dem: data/external/raw_dem.tif
+field_ditch_vector: data/fdp_constraints/burn_features/field_ditch_burn.shp
+channel_vector: data/fdp_constraints/burn_features/channel_burn.shp
+pond_vector: data/fdp_constraints/burn_features/pond_burn.shp
+truth_stream_vector: data/reference_drainage/pathway_evaluation_truth/pathway_evaluation_truth.shp

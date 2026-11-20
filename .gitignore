@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+results/**/recalculated/
+results/**/runtime/
+*.pt
+*.pth
+*.ckpt
+*.lock
+*.sr.lock
+data/external/
+models/
+third_party/

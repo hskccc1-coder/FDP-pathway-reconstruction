@@ -1,0 +1,114 @@
+{
+  "seed": 42,
+  "paths": {
+    "rgb_raster": "data/external/rgb_20cm.tif",
+    "slope_raster": "data/external/slope_20cm.tif",
+    "classification_objects": "data/annotations/training_objects_no_test_overlap_488.gpkg",
+    "validation_region": "data/evaluation_inputs/regions/validation_region.gpkg",
+    "independent_test_region": "data/evaluation_inputs/regions/independent_test_region.gpkg",
+    "sam2_repository": "third_party/sam2",
+    "sam2_checkpoint": "models/sam2.1_hiera_large.pt"
+  },
+  "nsr_evaluation": {
+    "class_priority": [
+      "Field",
+      "Water"
+    ],
+    "water_inside_interstrip": "excluded_from_evaluation",
+    "decided_by": "author",
+    "decided_on": "2026-10-28"
+  },
+  "sam2": {
+    "release": "SAM 2.1",
+    "model": "Hiera-L",
+    "model_config": "configs/sam2.1/sam2.1_hiera_l.yaml",
+    "checkpoint_sha256": "2647878D5DFA5098F2F8649825738A9345572BAE2D4350A2468587ECE47DD318",
+    "features": [
+      "rgb",
+      "slope"
+    ],
+    "tile_sizes_px": [
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "overlap_fraction": 0.5,
+    "value_min": 0.0,
+    "value_max": 255.0,
+    "minimum_polygon_area_m2": 0.5,
+    "use_fp16": true,
+    "automatic_mask_generator": {
+      "points_per_side": 32,
+      "pred_iou_thresh": 0.86,
+      "stability_score_thresh": 0.92,
+      "crop_n_layers": 1,
+      "crop_n_points_downscale_factor": 2,
+      "min_mask_region_area": 100,
+      "output_mode": "binary_mask"
+    }
+  },
+  "postprocessing": {
+    "minimum_polygon_area_m2": 4.0,
+    "maximum_hole_area_m2": 4.0,
+    "nms_iou_threshold": 0.6,
+    "minimum_overlap_fraction_of_smaller": 0.2,
+    "merge_overlap_classes": [
+      "Water",
+      "Greenhouse",
+      "Building",
+      "Forest"
+    ],
+    "water_class_name": "Water",
+    "water_closing_radius_m": 0.2,
+    "polygon_simplification_tolerance_m": 0.0
+  },
+  "classifier": {
+    "label_field": "class_en",
+    "classes": [
+      "Forest",
+      "Greenhouse",
+      "Field",
+      "Water",
+      "Building"
+    ],
+    "expected_source_counts": {
+      "Forest": 135,
+      "Greenhouse": 35,
+      "Field": 189,
+      "Water": 74,
+      "Building": 55
+    },
+    "expected_excluded_test_overlap_counts": {
+      "Forest": 0,
+      "Greenhouse": 0,
+      "Field": 0,
+      "Water": 0,
+      "Building": 0
+    },
+    "validation_fraction": 0.2,
+    "crop_mode": "dual_average",
+    "crop_expansion": 1.5,
+    "input_size_px": 224,
+    "value_min": 0.0,
+    "value_max": 255.0,
+    "normalization_mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "normalization_std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "epochs": 50,
+    "batch_size": 32,
+    "learning_rate": 0.0001,
+    "optimizer": "Adam",
+    "loss": "cross_entropy",
+    "dropout": 0.6,
+    "workers": 0,
+    "checkpoint_metric": "object_validation_accuracy"
+  }
+}
